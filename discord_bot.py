@@ -3,6 +3,7 @@ from datetime import datetime
 
 import discord
 from discord_slash import SlashCommand, SlashContext
+from discord_slash.utils.manage_commands import create_option
 from dotenv import load_dotenv
 
 from summ import gpt_summarize
@@ -43,6 +44,7 @@ async def process_gpt_responses(
     n: int,
     before: datetime | None = None,
     after: datetime | None = None,
+    individual: bool = True,
     send=None,
 ):
     if send is None:
@@ -56,7 +58,7 @@ async def process_gpt_responses(
 
     # History starts from most recent and moves back, reverse this to get the
     # messages in chronological order
-    msglist.reverse() 
+    msglist.reverse()
 
     pre_summary = (
         f"**Here's a summary of the latest {len(msglist)} messages"
@@ -64,15 +66,45 @@ async def process_gpt_responses(
         + (f" (after {after})" if after else "")
         + " (removed any sent by a bot):**\n"
     )
-    await send(pre_summary + gpt_summarize(msglist))
+    await send(pre_summary + gpt_summarize(msglist, individual_summaries=individual))
 
 
-@slash.slash(name="summarize", guild_ids=guild_ids)
+@slash.slash(
+    name="summarize",
+    options=[
+        create_option(
+            name="howmany",
+            description="How many messages to look through",
+            option_type=4,  # int
+            required=False,
+        ),
+        create_option(
+            name="before",
+            description="Only include messages sent before this time",
+            option_type=3,  # str
+            required=False,
+        ),
+        create_option(
+            name="after",
+            description="Only include messages sent after this time",
+            option_type=3,  # str
+            required=False,
+        ),
+        create_option(
+            name="individual",
+            description="Whether to summarize each message separately",
+            option_type=5,  # bool
+            required=False,
+        )
+    ],
+    guild_ids=guild_ids,
+)
 async def _summarize(
     ctx: SlashContext,
     howmany: int = 10,
     before: str = "",
     after: str = "",
+    individual: bool = True,
 ):
     if before:
         try:
@@ -94,7 +126,12 @@ async def _summarize(
 
     await ctx.defer()
     await process_gpt_responses(
-        ctx.channel, n=howmany, before=before_dt, after=after_dt, send=ctx.send
+        ctx.channel,
+        n=howmany,
+        before=before_dt,
+        after=after_dt,
+        individual=individual,
+        send=ctx.send,
     )
 
 

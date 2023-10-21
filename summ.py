@@ -15,8 +15,7 @@ enc = tiktoken.encoding_for_model("gpt-3.5-turbo")
 MODEL = "gpt-3.5-turbo"
 
 
-def gpt_summarize(messages: list) -> str:
-    print(messages)
+def gpt_summarize(messages: list, individual_summaries: bool = True) -> str:
     if not messages:
         return "\n".join(
             [
@@ -40,7 +39,12 @@ def gpt_summarize(messages: list) -> str:
             {
                 "role": "system",
                 "content": "The following messages are on the format 'author:message'."
-                + " Summarize them into a list of items on the form 'author: summary',"
+                + (
+                    " Summarize them into a list of items on the form 'author: summary',"
+                    if individual_summaries
+                    else " Summarize the topics discussed, referring back to the authors"
+                    + " if necessary, into a list"
+                )
                 + " delimited with two colons ('::')."
                 + " Disregard any uninportant messages.",
             },
