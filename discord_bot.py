@@ -54,6 +54,10 @@ async def process_gpt_responses(
         if not message.author.bot:
             msglist.append(f"{message.author.name}:{message.content}")
 
+    # History starts from most recent and moves back, reverse this to get the
+    # messages in chronological order
+    msglist.reverse() 
+
     pre_summary = (
         f"**Here's a summary of the latest {len(msglist)} messages"
         + (f" (before {before})" if before else "")
