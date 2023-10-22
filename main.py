@@ -2,6 +2,7 @@ import os
 from datetime import datetime
 
 import discord
+from discord.ext import commands
 from discord_slash import SlashCommand, SlashContext
 from discord_slash.utils.manage_commands import create_option
 from dotenv import load_dotenv
@@ -14,7 +15,7 @@ GUILD = int(os.environ["DISCORD_GUILD"])
 
 intents = discord.Intents.all()
 
-client = discord.Client(intents=intents)
+client = commands.Bot(command_prefix="!", intents=intents)
 slash = SlashCommand(
     client, sync_commands=True
 )  # Declares slash commands through the client.
