@@ -13,3 +13,9 @@ A Discord bot that summarises messages in a channel for your (and others') conve
    2. `before` restricts the message being read to those sent _before_ a certain time. Takes a string formatted like a date(time) - anything parseable by the Python `datetime.datetime.fromisoformat` function is fair game.
    3. `after` restricts the message being read to those sent _after_ a certain time. Takes a string formatted like a date(time) - anything parseable by the Python `datetime.datetime.fromisoformat` function is fair game.
    4. `individual` controls whether GPT should attempt to summarise the messages individually (e.g. "take each message and summarise it") or all together (e.g. "give me a summary of what people have said in the latest `howmany` messages").
+
+## Credits
+
+- Dev: [Janne](https://github.com/Karlkorv) and myself
+- API token: [Linus](https://github.com/linusostlund)
+- Hackathon organisation: [Linus](https://github.com/linusostlund) and Jesper
